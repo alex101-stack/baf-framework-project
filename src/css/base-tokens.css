@@ -1,0 +1,41 @@
+/* --- Source: src/css/base-tokens.css --- */
+:root {
+  /* Tier 1: Reference Tokens (Raw values dari Blogger Variables) */
+  --baf-ref-color-blue-500: $(primary.color);
+  --baf-ref-color-gray-600: $(secondary.color);
+  --baf-ref-color-white: $(background.color);
+  --baf-ref-color-dark: $(text.color);
+  --baf-ref-color-gray-300: $(border.color);
+  --baf-ref-color-light-bg: #f8f9fa;
+  --baf-ref-color-shadow: rgba(0, 0, 0, 0.05);
+
+  /* Tier 2: System / Semantic Tokens */
+  --baf-sys-color-bg: var(--baf-ref-color-white);
+  --baf-sys-color-text: var(--baf-ref-color-dark);
+  --baf-sys-color-primary: var(--baf-ref-color-blue-500);
+  --baf-sys-color-secondary: var(--baf-ref-color-gray-600);
+  --baf-sys-color-border: var(--baf-ref-color-gray-300);
+  --baf-sys-color-card-bg: var(--baf-ref-color-white);
+  --baf-sys-color-shadow: var(--baf-ref-color-shadow);
+
+  --baf-sys-font-body: $(font.sans);
+  --baf-sys-spacing-sm: 8px;
+  --baf-sys-spacing-md: 16px;
+  --baf-sys-spacing-lg: 24px;
+  --baf-sys-spacing-xl: 32px;
+
+  --baf-sys-motion-curve-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --baf-sys-motion-speed-default: 0.35s;
+
+  /* Tier 3: Component-Specific Variables */
+  --baf-comp-header-height: 60px;
+  --baf-comp-bottom-nav-height: 56px;
+}
+
+html[data-theme='dark'] {
+  --baf-sys-color-bg: #121212;
+  --baf-sys-color-text: #e0e0e0;
+  --baf-sys-color-border: #333333;
+  --baf-sys-color-card-bg: #1e1e1e;
+  --baf-sys-color-shadow: rgba(0, 0, 0, 0.3);
+}
