@@ -1,0 +1,23 @@
+/* --- Source: src/css/behaviors/scroll-hide.css --- */
+.baf-behavior-scroll-hide {
+  transition: transform 0.4s var(--baf-sys-motion-curve-smooth),
+              opacity 0.4s ease,
+              visibility 0.4s !important;
+  will-change: transform, opacity; /* Optimalisasi jalur komposit GPU */
+}
+
+/* Sembunyikan elemen ke arah bawah (untuk navigasi bawah seluler) */
+.baf-behavior-scroll-hide--hidden {
+  transform: translate3d(0, 100%, 0) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none;
+}
+
+/* Sembunyikan elemen ke arah atas (untuk sticky header) */
+header.baf-behavior-scroll-hide--hidden {
+  transform: translate3d(0, -100%, 0) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none;
+}
