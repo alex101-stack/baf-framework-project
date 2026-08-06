@@ -1,0 +1,49 @@
+# .github/workflows/baf-compiler-ci.yml
+name: BAF Compiler CI/CD Validation Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate_and_build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python Runtime
+      uses: actions/setup-python@v4
+      with:
+        python-python: '3.10'
+
+    - name: Lint and Audit Python Compiler Script
+      run: |
+        python -m py_compile build/baf-compiler.py
+
+    - name: Execute BAF v16 Compilation
+      run: |
+        python build/baf-compiler.py
+
+    - name: Verify XML Well-formedness & Syntax Validity
+      run: |
+        python -c "
+        import xml.etree.ElementTree as ET
+        try:
+            # Uji validitas struktural file XML hasil rakitan
+            ET.parse('dist/baf-release-v16.xml')
+            print('XML Validation Passed: Well-formed and Valid!')
+        except ET.ParseError as e:
+            print('XML Validation Failed: Parse Error detected!')
+            print(str(e))
+            exit(1)
+        "
+
+    - name: Store Compiled Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: baf-release-v16-artifact
+        path: dist/baf-release-v16.xml
