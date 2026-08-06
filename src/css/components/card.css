@@ -1,0 +1,71 @@
+/* --- Source: src/css/components/card.css --- */
+.baf-comp-card {
+  --baf-card-bg: var(--baf-sys-color-card-bg);
+  --baf-card-border: var(--baf-sys-color-border);
+  background-color: var(--baf-card-bg);
+  border: 1px solid var(--baf-card-border);
+  border-radius: 8px;
+  padding: var(--baf-sys-spacing-lg);
+  box-shadow: 0 4px 6px var(--baf-sys-color-shadow);
+  transition: background-color var(--baf-sys-motion-speed-default) var(--baf-sys-motion-curve-smooth),
+              border-color var(--baf-sys-motion-speed-default) var(--baf-sys-motion-curve-smooth);
+}
+
+.baf-comp-card--interactive {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 4px 12px var(--baf-sys-color-shadow);
+  transition: transform var(--baf-sys-motion-speed-default) var(--baf-sys-motion-curve-smooth),
+              box-shadow var(--baf-sys-motion-speed-default) var(--baf-sys-motion-curve-smooth);
+}
+
+.baf-comp-card--interactive:hover {
+  transform: translate3d(0, -6px, 0); /* Mengalihkan beban kerja ke GPU */
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.baf-comp-card__media {
+  aspect-ratio: 16 / 10;
+  background-color: var(--baf-sys-color-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.baf-comp-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.baf-comp-card__tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--baf-sys-color-primary);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.baf-comp-card__meta {
+  padding: var(--baf-sys-spacing-md);
+}
+
+.baf-comp-card__title {
+  margin: 0 0 var(--baf-sys-spacing-sm) 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--baf-sys-color-text);
+}
+
+.baf-comp-card__snippet {
+  margin: 0;
+  font-size: 12px;
+  color: var(--baf-sys-color-secondary);
+}
+
