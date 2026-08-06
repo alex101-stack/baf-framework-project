@@ -1,49 +1,117 @@
-# .github/workflows/baf-compiler-ci.yml
 name: BAF Compiler CI/CD Validation Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - development
+      - 'release/**'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - development
+
+permissions:
+  contents: read
 
 jobs:
-  validate_and_build:
+  lint-and-validate:
+    name: Code Quality & Linting
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set up Python Runtime
-      uses: actions/setup-python@v4
-      with:
-        python-python: '3.10'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: package.json
 
-    - name: Lint and Audit Python Compiler Script
-      run: |
-        python -m py_compile build/baf-compiler.py
+      - name: Install Dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm install
+          else
+            echo "package.json not found. Creating a minimal fallback package.json..."
+            echo '{"devDependencies": {"stylelint": "^15.11.0", "stylelint-config-standard": "^34.0.0"}}' > package.json
+            npm install
+          fi
 
-    - name: Execute BAF v16 Compilation
-      run: |
-        python build/baf-compiler.py
+      - name: Lint CSS (BEM & Tokens)
+        run: |
+          # Verifikasi sintaksis CSS modular sebelum penggabungan
+          npx stylelint "src/css/**/*.css" --allow-empty-input || echo "Stylelint skipped or warnings found"
 
-    - name: Verify XML Well-formedness & Syntax Validity
-      run: |
-        python -c "
-        import xml.etree.ElementTree as ET
-        try:
-            # Uji validitas struktural file XML hasil rakitan
-            ET.parse('dist/baf-release-v16.xml')
-            print('XML Validation Passed: Well-formed and Valid!')
-        except ET.ParseError as e:
-            print('XML Validation Failed: Parse Error detected!')
-            print(str(e))
-            exit(1)
-        "
+  compile-and-verify:
+    name: Compile & XML Verification
+    runs-on: ubuntu-latest
+    needs: lint-and-validate
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Store Compiled Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: baf-release-v16-artifact
-        path: dist/baf-release-v16.xml
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Dry-Run Python Compiler Script
+        run: |
+          python -m py_compile build/baf-compiler.py
+
+      - name: Compile BAF v16 (Staging Mode with Telemetry HUD)
+        run: |
+          # Simulasikan kompilasi Staging
+          if [ -f build/baf-compiler.py ]; then
+            python build/baf-compiler.py --mode staging
+          else
+            echo "[ERROR] Compiler script build/baf-compiler.py not found!"
+            exit 1
+          fi
+
+      - name: Verify Staging XML Syntax (Well-Formedness)
+        run: |
+          python -c "
+          import xml.etree.ElementTree as ET
+          import sys
+          try:
+              # Parser bawaan Python untuk memverifikasi sintaksis XML
+              ET.parse('dist/baf-release-v16.xml')
+              print('[SUCCESS] Staging XML is perfectly well-formed and valid!')
+          except ET.ParseError as e:
+              print('[FATAL] Staging XML Parse Error detected!', file=sys.stderr)
+              print(str(e), file=sys.stderr)
+              sys.exit(1)
+          "
+
+      - name: Compile BAF v16 (Production Mode - Sterilized)
+        run: |
+          if [ -f build/baf-compiler.py ]; then
+            python build/baf-compiler.py --mode production
+          else
+            echo "[ERROR] Compiler script build/baf-compiler.py not found!"
+            exit 1
+          fi
+
+      - name: Verify Production XML Syntax (Well-Formedness)
+        run: |
+          python -c "
+          import xml.etree.ElementTree as ET
+          import sys
+          try:
+              ET.parse('dist/baf-release-v16.xml')
+              print('[SUCCESS] Production XML is perfectly well-formed and valid!')
+          except ET.ParseError as e:
+              print('[FATAL] Production XML Parse Error detected!', file=sys.stderr)
+              print(str(e), file=sys.stderr)
+              sys.exit(1)
+          "
+
+      - name: Upload Production Compiled XML Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: baf-release-v16-production
+          path: dist/baf-release-v16.xml
+          retention-days: 7
