@@ -113,7 +113,7 @@ jobs:
           echo "✅ [SUCCESS] Berkas dist/baf-release-v16.xml terverifikasi."
 
       - name: Upload Production Compiled XML Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: baf-release-v16-production
           path: dist/baf-release-v16.xml
