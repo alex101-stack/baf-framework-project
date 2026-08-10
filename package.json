@@ -1,0 +1,15 @@
+{
+  "name": "baf-boilerplate",
+  "version": "1.0.0",
+  "scripts": {
+    "validate": "node validate-structure.js",
+    "bootstrap": "node validate-structure.js --bootstrap",
+    "test": "node --test src/**/*.test.js tests/**/*.test.js",
+    "build": "python build/baf-compiler.py",
+    "precommit": "npm run validate && npm run test && npm run build && git add dist/template.xml"
+  },
+  "devDependencies": {
+    "fast-xml-parser": "^4.3.0",
+    "husky": "^9.0.0"
+  }
+}

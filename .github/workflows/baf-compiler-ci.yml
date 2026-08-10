@@ -115,3 +115,16 @@ jobs:
           name: baf-release-v16-production
           path: dist/baf-release-v16.xml
           retention-days: 7
+
+      # Jalankan kompilator dari subfolder build/
+      - name: Execute BAF Compiler
+        run: python build/baf-compiler.py
+
+
+      - name: Verify Output Artifact
+        run: |
+          if [ ! -f "dist/baf-release-v16.xml" ]; then
+            echo "❌ [ERROR] Berkas dist/baf-release-v16.xml tidak ditemukan!"
+            exit 1
+          fi
+            echo "✅ [SUCCESS] Berkas dist/baf-release-v16.xml terverifikasi."
