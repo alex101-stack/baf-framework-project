@@ -116,6 +116,7 @@ jobs:
           path: dist/baf-release-v16.xml
           retention-days: 7
 
+<<<<<<< HEAD
       # Jalankan kompilator dari subfolder build/
       - name: Execute BAF Compiler
         run: python build/baf-compiler.py
@@ -128,3 +129,6 @@ jobs:
             exit 1
           fi
             echo "✅ [SUCCESS] Berkas dist/baf-release-v16.xml terverifikasi."
+=======
+      
+>>>>>>> e6d4d6244de58f943857a4a8610accd47b5973af
